@@ -1,4 +1,5 @@
 //jshint esversion:6
+const encrypt = require("mongoose-encryption");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const express = require("express");
@@ -12,10 +13,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true});
 
-const userSchema = {
+const userSchema = new mongoose.Schema({
   email: String,
   password: String
-};
+});
+
+const secret = "Thisisourlittlesecret.";
+userSchema.plugin(encrypt, { secret: secret, encryptedFields: ['password'] });
 
 const User = new mongoose.model("User", userSchema);
 
